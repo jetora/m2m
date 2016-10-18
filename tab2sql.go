@@ -5,8 +5,9 @@ import (
 	"bytes"
 	"database/sql"
 	"fmt"
-	_ "mysql"
 	"os"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var myDB *sql.DB
