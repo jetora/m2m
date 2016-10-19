@@ -30,11 +30,11 @@ func connMysql(host *Hostinfo) (*sql.DB, error) {
 }
 func SetDB(ip string) (myDB *sql.DB) {
 	var server_info Hostinfo
-	server_info.DBUser = "root"
-	server_info.DBPassword = "rootpass"
+	server_info.DBUser = "xxx"
+	server_info.DBPassword = "xxx"
 	server_info.DBname = "test"
 	server_info.DBHost = ip
-	server_info.DBPort = "4306"
+	server_info.DBPort = "xxx"
 	server_info.DBChar = "utf8"
 	myDB, _ = connMysql(&server_info)
 	return myDB
@@ -42,22 +42,15 @@ func SetDB(ip string) (myDB *sql.DB) {
 func tab2txt(ip string) {
 	myDB = SetDB(ip)
 	defer myDB.Close()
-	rows, err := myDB.Query("select * from jdorders_0.orders_0 limit 2")
+	rows, err := myDB.Query("select * from xxx.xxx")
 	defer rows.Close()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 	tsql := bytes.Buffer{}
-	tsql.WriteString("insert into jdorders_0.orders_0 (")
+
 	columns, err := rows.Columns()
-	for i, column := range columns {
-		if i != len(columns)-1 {
-			tsql.WriteString(column + ",")
-		} else {
-			tsql.WriteString(column)
-		}
-	}
-	tsql.WriteString(") values \n")
+
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -67,6 +60,15 @@ func tab2txt(ip string) {
 		scanArgs[i] = &values[i]
 	}
 	for rows.Next() {
+		tsql.WriteString("insert into xxx.xxx (")
+		for i, column := range columns {
+			if i != len(columns)-1 {
+				tsql.WriteString(column + ",")
+			} else {
+				tsql.WriteString(column)
+			}
+		}
+		tsql.WriteString(") values ")
 		err = rows.Scan(scanArgs...)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -85,7 +87,7 @@ func tab2txt(ip string) {
 				tsql.WriteString("'" + value + "'")
 			}
 		}
-		tsql.WriteString("),\n")
+		tsql.WriteString(");\n")
 	}
 	if err = rows.Err(); err != nil {
 		fmt.Println(err.Error())
@@ -102,6 +104,6 @@ func tab2txt(ip string) {
 	outputWriter.Flush()
 }
 func main() {
-	from_ip := "10.0.57.74"
+	from_ip := "xxx"
 	tab2txt(from_ip)
 }
